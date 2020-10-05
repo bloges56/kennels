@@ -2,12 +2,12 @@ import React from "react"
 import { Route } from "react-router-dom"
 import { Home } from "./Home"
 import { LocationCard } from "./location/Location"
-import { EmployeeCard } from "./employee/EmployeeCard"
-import { CustomerCard } from "./customer/CustomerCard"
 import { AnimalProvider } from "./animal/AnimalProvider"
 import { AnimalList } from "./animal/AnimalList"
 import { CustomerProvider } from "./customer/CustomerProvider"
 import { CustomerList } from "./customer/CustomerList"
+import { EmployeeProvider } from "./employee/EmployeeProvider.js"
+import { EmployeeList } from "./employee/EmployeeList.js"
 
 export const ApplicationViews = (props) => {
     return (
@@ -33,12 +33,12 @@ export const ApplicationViews = (props) => {
             </Route>
 
             {/* Render the employee list when http://localhost:3000/employees */}
-            <Route path="/employees">
-                <div className="employees">
-                    <EmployeeCard />
-                    <EmployeeCard />
-                </div>
-            </Route>
+            <EmployeeProvider>
+                <Route path="/employees">
+                    <EmployeeList />
+                </Route>
+            </EmployeeProvider>
+            
 
             {/* Render the customer list when http://localhost:3000/customers */}
             <CustomerProvider>
