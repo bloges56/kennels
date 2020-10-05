@@ -6,6 +6,8 @@ import { EmployeeCard } from "./employee/EmployeeCard"
 import { CustomerCard } from "./customer/CustomerCard"
 import { AnimalProvider } from "./animal/AnimalProvider"
 import { AnimalList } from "./animal/AnimalList"
+import { CustomerProvider } from "./customer/CustomerProvider"
+import { CustomerList } from "./customer/CustomerList"
 
 export const ApplicationViews = (props) => {
     return (
@@ -39,12 +41,11 @@ export const ApplicationViews = (props) => {
             </Route>
 
             {/* Render the customer list when http://localhost:3000/customers */}
-            <Route path="/customers">
-                <div className="customers">
-                    <CustomerCard />
-                    <CustomerCard />
-                </div>
-            </Route>
+            <CustomerProvider>
+                <Route exact path="/customers">
+                    <CustomerList />
+                </Route>
+            </CustomerProvider>
         </>
     )
 }
