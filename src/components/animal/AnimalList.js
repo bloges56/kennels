@@ -24,7 +24,7 @@ export const AnimalList = () => {
           {console.log("AnimalList: Render")}
           {
             animals.map(animal => {
-              return <AnimalCard key={animal.id} location={animal.location.name} animal={animal} />
+              return <AnimalCard key={animal.id} animal={animal} />
             })
           }
         </div>
