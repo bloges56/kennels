@@ -65,6 +65,10 @@ export const ApplicationViews = (props) => {
                     <LocationDetail />
                 </Route>
 
+                <Route exact path="/locations/edit/:locationId(\d+)">
+                    <LocationForm />
+                </Route>
+
             </LocationProvider>
 
             {/* Render the employee list when http://localhost:3000/employees */}
