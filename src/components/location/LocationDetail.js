@@ -22,6 +22,22 @@ export const LocationDetail = () => {
         <section className="location">
             <h3 className="location__name">{location?.name}</h3>
             <div className="location_address">{location?.address}</div>
+            <div className="location_employees">
+                <h3>Employees</h3>
+                <div>
+                    {location?.employees.map(employee => {
+                        return employee.name
+                    }).join(", ")}
+                </div>
+            </div>
+            <div className="location_animals">
+                <h3>Animals</h3>
+                <div>
+                    {location?.animals.map(animal => {
+                        return animal.name
+                    }).join(", ")}
+                </div>
+            </div>
         </section>
     )
 
