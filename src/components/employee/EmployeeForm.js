@@ -1,37 +1,73 @@
-import React, { useContext, useEffect, useRef } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { EmployeeContext } from './EmployeeProvider'
 import { LocationContext } from '../location/LocationProvider'
 import './Employee.css'
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom'
 
 export const EmployeeForm = () => {
 
-    const { addEmployee } = useContext(EmployeeContext)
+
+    const { addEmployee, getEmployeeById, updateEmployee } = useContext(EmployeeContext)
     const { locations, getLocations } = useContext(LocationContext)
+
+    const [employee, setEmployee] = useState()
+
+    const [ isLoading, setIsLoading ] = useState(true)
+
+    //when field changes, update state. This causes a re-render and updates the view.
+    //Controlled component
+    const handleControlledInputChange = (event) => {
+        //When changing a state object or array, 
+        //always create a copy make changes, and then set state.
+        const newEmployee = { ...employee }
+        //animal is an object with properties. 
+        //set the property to the new value
+        newEmployee[event.target.name] = event.target.value
+        //update state
+        setEmployee(newEmployee)
+    }
+
+    const {employeeId} = useParams()
 
     useEffect(() => {
         getLocations()
+        .then(response => {
+            if(employeeId){
+                getEmployeeById(employeeId)
+                .then(employee => {
+                    setEmployee(employee)
+                    setIsLoading(false)
+                })
+            }
+            else{
+                setIsLoading(false)
+            }
+        })
     }, [])
-
-    const name = useRef(null)
-    const location = useRef(null)
     
 
     const history = useHistory()
 
     const constructNewEmployee = () => {
 
-        const locationId = parseInt(location.current.value)
-
-        if(locationId === 0){
+        if(parseInt(employee.locationId) === 0){
             window.alert("Select a location")
+        }
+        else if(employeeId){
+            getEmployeeById(employeeId)
+            updateEmployee({
+                id: employee.id,
+                name: employee.name,
+                locationId: parseInt(employee.locationId)
+            })
+            .then(() => history.push(`/employees/detail/${employeeId}`))
         }
         else{
             addEmployee({
-                name: name.current.value,
-                locationId
+                name: employee.name,
+                locationId: parseInt(employee.locationId)
             })
-            .then(() => history.push('/employees'))
+            .then(() => history.push(`/employees`))
         }
     }
 
@@ -40,17 +76,19 @@ export const EmployeeForm = () => {
 
     return (
         <form className="employeeForm">
-            <h2>New Employee</h2>
+            <h2>{employeeId ? "Update Employee" : "New Employee"}</h2>
             <fieldset>
-                <div class="form-group">
+                <div className="form-group">
                     <label htmlFor="employeeName">Employee name: </label>
-                    <input type="text" id="employeeName" ref={name} required autoFocus className="form-control" placeholder="Employee name" />
+                    <input type="text" id="employeeName" name="name" required autoFocus className="form-control" placeholder="Employee Name"
+                    onChange={handleControlledInputChange}
+                    defaultValue={employee?.name} />
                 </div>
             </fieldset>
             <fieldset>
                 <div className="form-group">
                     <label htmlFor="location">Assign to location: </label>
-                    <select defaultValue="" name="location" ref={location} id="employeeLocation" className="form-control" >
+                    <select value={employee?.locationId} name="locationId" id="employeeLocation" className="form-control" onChange={handleControlledInputChange}>
                         <option value="0">Select a location</option>
                         {locations.map(l => (
                             <option key={l.id} value={l.id}>
@@ -65,8 +103,9 @@ export const EmployeeForm = () => {
                     evt.preventDefault() // Prevent browser from submitting the form
                     constructNewEmployee()
                 }}
-                className="btn btn-primary">
-                Save Animal
+                className="btn btn-primary"
+                disabled={isLoading}>
+                {employeeId ? "Save Employee" : "Update Employee"}
             </button>
         </form>
     )

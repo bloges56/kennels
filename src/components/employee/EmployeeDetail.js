@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react"
 import { EmployeeContext } from "./EmployeeProvider"
-import { useParams } from "react-router-dom"
+import { useParams, useHistory } from "react-router-dom"
 import "./Employee.css"
 
 export const EmployeeDetail = () => {
@@ -21,10 +21,15 @@ export const EmployeeDetail = () => {
     }, [])
 
 
+    const history = useHistory()
+
     return (
         <section className="employee">
             <h3 className="employee__name">{employee.name}</h3>
             <div className="employee_location">{location.name}</div>
+            <button onClick={() => {
+                history.push(`/employees/edit/${employee.id}`)
+            }}>Edit</button>
         </section>
     )
 
